@@ -1,4 +1,28 @@
+import { useState } from "react";
+import API from "./services/api";
+
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const res = await API.post("/users/login", {
+        email,
+        password,
+      });
+
+      alert("Login Successful!");
+
+      // Save logged-in user
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      console.log(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Login Failed");
+    }
+  };
+
   return (
     <div>
       <h2>Login</h2>
@@ -6,6 +30,8 @@ function Login() {
       <input
         type="email"
         placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <br /><br />
@@ -13,11 +39,13 @@ function Login() {
       <input
         type="password"
         placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <br /><br />
 
-      <button>Login</button>
+      <button onClick={handleLogin}>Login</button>
     </div>
   );
 }
